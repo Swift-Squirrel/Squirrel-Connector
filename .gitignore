@@ -65,3 +65,9 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
+
+# XCODE
+*.xcodeproj
+
+# Mac OS
+.DS_Store
