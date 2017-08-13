@@ -24,7 +24,4 @@ extension ModelProtocol {
         let name = Mirror(reflecting: self).description.components(separatedBy: " ")[2] + "S"
         try! Connector.connector?.drop(tableName: name)
     }
-//    func migration()
 }
-
-

@@ -7,5 +7,9 @@
 //
 
 public protocol SeederProtocol {
+    init()
+
     var models: [ModelProtocol] { get }
+
+    func setUp() throws
 }
