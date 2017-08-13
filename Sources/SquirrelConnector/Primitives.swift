@@ -98,6 +98,6 @@ extension String: Primitive {
 
 extension Date: Primitive {
     public var mysqlType: String {
-        return "DATETTIME"
+        return "DATETIME"
     }
 }
