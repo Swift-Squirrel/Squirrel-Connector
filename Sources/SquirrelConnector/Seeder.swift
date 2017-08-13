@@ -11,5 +11,5 @@ public protocol SeederProtocol {
 
     var models: [ModelProtocol] { get }
 
-    func setUp() throws
+    mutating func setUp() throws
 }
