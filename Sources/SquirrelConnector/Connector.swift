@@ -28,7 +28,7 @@ public protocol ConnectorProtocol {
 
     func create<T: ModelProtocol>(table object: T) throws
 
-    func save<T: ModelProtocol>(table object: T) throws
+    func save<T: ModelProtocol>(table object: T) throws -> UInt
 
-    func deepSave<T: ModelProtocol>(table object: T) throws
+    func deepSave<T: ModelProtocol>(table object: T) throws -> UInt
 }

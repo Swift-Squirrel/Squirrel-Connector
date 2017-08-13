@@ -9,27 +9,42 @@
 
 public protocol ModelProtocol {
     init()
+
+    var id: UInt { get set }
 }
 
 extension ModelProtocol {
-    public final func create() {
-        if let connector = Connector.connector {
-            try! connector.open()
-            try! connector.create(table: self)
-            try! connector.close()
+    public final func create() throws {
+        guard let connector = Connector.connector else {
+            throw ConnectorError(kind: .noConnector)
         }
+        try connector.open()
+        try connector.create(table: self)
+        try connector.close()
+
     }
 
-    public final func drop() {
-        let name = Mirror(reflecting: self).description.components(separatedBy: " ")[2] + "S"
-        try! Connector.connector?.drop(tableName: name)
+    public final func drop() throws {
+        guard let connector = Connector.connector else {
+            throw ConnectorError(kind: .noConnector)
+        }
+        try connector.open()
+        let name = String(describing: type(of: self)) + "S"
+        try connector.drop(tableName: name)
+        try connector.close()
     }
 
-    public final func save() throws {
-        try Connector.connector?.save(table: self)
+    mutating public final func save() throws {
+        guard let connector = Connector.connector else {
+            throw ConnectorError(kind: .noConnector)
+        }
+        self.id = try connector.save(table: self)
     }
 
-    public final func deepSave() throws {
-        try Connector.connector?.deepSave(table: self)
+    mutating public final func deepSave() throws {
+        guard let connector = Connector.connector else {
+            throw ConnectorError(kind: .noConnector)
+        }
+        self.id = try connector.deepSave(table: self)
     }
 }
