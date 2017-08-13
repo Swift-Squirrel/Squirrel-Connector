@@ -24,4 +24,12 @@ extension ModelProtocol {
         let name = Mirror(reflecting: self).description.components(separatedBy: " ")[2] + "S"
         try! Connector.connector?.drop(tableName: name)
     }
+
+    public final func save() throws {
+        try Connector.connector?.save(table: self)
+    }
+
+    public final func deepSave() throws {
+        try Connector.connector?.deepSave(table: self)
+    }
 }
