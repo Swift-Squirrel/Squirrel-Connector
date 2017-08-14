@@ -57,14 +57,6 @@ public protocol ConnectorProtocol {
     /// - Throws: Connection and socket errors
     func drop(tableName: String) throws
 
-    /// Create table in database
-    ///
-    /// - Parameters:
-    ///   - table: table name
-    ///   - columns: columns names
-    /// - Throws: Connection and socket errors
-    func create(table: String, columns: [String: String]) throws
-
     /// Create table in database from object
     ///
     /// - Parameter object: object template of new table
