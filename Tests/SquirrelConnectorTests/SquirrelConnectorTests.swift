@@ -7,9 +7,6 @@ struct Comment: Codable {
 }
 
 struct Post: Model {
-
-    init() {
-    }
     init(title: String, body: String) {
         self.title = title
         self.body = body
@@ -17,8 +14,8 @@ struct Post: Model {
 
     var id: ObjectId? = nil
     var cmnt = Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "commment")
-    var title = ""
-    var body = ""
+    var title: String
+    var body: String
     var comments: [Comment] = []
     var created = Date()
     var modified = Date()
