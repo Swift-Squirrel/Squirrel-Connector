@@ -3,4 +3,5 @@ import XCTest
 
 XCTMain([
     testCase(SquirrelConnectorTests.allTests),
+    testCase(PublicConnectorTests.allTests)
 ])

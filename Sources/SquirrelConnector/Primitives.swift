@@ -8,96 +8,35 @@
 
 import Foundation
 
-public protocol Primitive {
-    var mysqlType: String { get }
-}
+/// Primitive
+public protocol Primitive { }
 
-extension UInt8: Primitive {
-    public var mysqlType: String {
-        return "TINYINT UNSIGNED"
-    }
-}
+extension UInt8: Primitive { }
 
-extension UInt16: Primitive {
-    public var mysqlType: String {
-        return "SMALLINT UNSIGNED"
-    }
-}
+extension UInt16: Primitive { }
 
-extension UInt32: Primitive {
-    public var mysqlType: String {
-        return "INT UNSIGNED"
-    }
-}
+extension UInt32: Primitive { }
 
-extension UInt64: Primitive {
-    public var mysqlType: String {
-        return "BIGINT UNSIGNED"
-    }
-}
+extension UInt64: Primitive { }
 
-extension UInt: Primitive {
-    public var mysqlType: String {
-        return "BIGINT UNSIGNED"
-    }
-}
+extension UInt: Primitive { }
 
-extension Int8: Primitive {
-    public var mysqlType: String {
-        return "TINYINT"
-    }
-}
+extension Int8: Primitive { }
 
-extension Int16: Primitive {
-    public var mysqlType: String {
-        return "SMALLINT"
-    }
-}
+extension Int16: Primitive { }
 
-extension Int32: Primitive {
-    public var mysqlType: String {
-        return "INT"
-    }
-}
+extension Int32: Primitive { }
 
-extension Int64: Primitive {
-    public var mysqlType: String {
-        return "BIGINT"
-    }
-}
+extension Int64: Primitive { }
 
-extension Int: Primitive {
-    public var mysqlType: String {
-        return "BIGINT"
-    }
-}
+extension Int: Primitive { }
 
-extension Double: Primitive {
-    public var mysqlType: String {
-        return "DOUBLE(16)"
-    }
-}
+extension Double: Primitive { }
 
-extension Float: Primitive {
-    public var mysqlType: String {
-        return "FLOAT(6)"
-    }
-}
+extension Float: Primitive { }
 
-extension Bool: Primitive {
-    public var mysqlType: String {
-        return "BOOL"
-    }
-}
+extension Bool: Primitive { }
 
-extension String: Primitive {
-    public var mysqlType: String {
-        return "TEXT"
-    }
-}
+extension String: Primitive { }
 
-extension Date: Primitive {
-    public var mysqlType: String {
-        return "DATETIME"
-    }
-}
+extension Date: Primitive { }

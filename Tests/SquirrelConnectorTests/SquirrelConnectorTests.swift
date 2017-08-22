@@ -1,15 +1,107 @@
 import XCTest
 @testable import SquirrelConnector
 
+struct Comment: Codable {
+    let user: ObjectId
+    let comment: String
+}
+
+struct Post: Model {
+
+    init() {
+    }
+    init(title: String, body: String) {
+        self.title = title
+        self.body = body
+    }
+
+    var id: ObjectId? = nil
+    var cmnt = Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "commment")
+    var title = ""
+    var body = ""
+    var comments: [Comment] = []
+    var created = Date()
+    var modified = Date()
+}
+
 class SquirrelConnectorTests: XCTestCase {
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        XCTAssertEqual(SquirrelConnector().text, "Hello, World!")
+        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        XCTAssertNoThrow(try Post.drop())
+        var a = Post(title: "Dogs", body: "Dogs are not dogs!")
+        a.comments = [
+            Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "blah"),
+            Comment(user: try! ObjectId("59984722610934e182846e7e"), comment: "blah blach")
+        ]
+        XCTAssertNil(a.id)
+        XCTAssertNoThrow(try a.save())
+        XCTAssertNotNil(a.id)
+        let id = a.id
+        a.body = "Dogs are not cats!"
+        XCTAssertNotNil(a.id)
+        XCTAssertNoThrow(try a.save())
+        XCTAssertNotNil(a.id)
+        XCTAssertTrue(id == a.id)
+    }
+
+    func testFindBasic() {
+        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        var a = Post(title: "Dogs", body: "Dogs are not cats!")
+        a.comments.append(Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "blah"))
+        XCTAssertNoThrow(try Post.drop())
+        XCTAssertNoThrow(try a.save())
+        var b = try! Post.find()
+        XCTAssertNotNil(b.first)
+        XCTAssert(b.first!.id! == a.id!)
+        let encoder = JSONEncoder()
+        let data = try! encoder.encode(b)
+        let str = String(data: data, encoding: .utf8)!
+        XCTAssert(str == b.json)
+
+        let c = try! Post.findOne()
+        XCTAssertNotNil(c)
+        if let cc = c {
+            XCTAssert(cc.id == a.id)
+            XCTAssert(cc.title == a.title)
+        } else {
+            XCTFail()
+        }
+
+        XCTAssertNoThrow(try b.removeAllDocuments())
+        XCTAssert(b.first!.id == nil)
+    }
+
+    func testProjection() {
+        struct TitleBody: Codable {
+            var title: String
+            var body: String
+        }
+        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        var a = Post(title: "Dogs", body: "Dogs are not cats!")
+        a.comments.append(Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "blah"))
+        XCTAssertNoThrow(try Post.drop())
+        XCTAssertNoThrow(try a.save())
+        let b: [TitleBody] = try! Post.find()
+        XCTAssertNotNil(b.first)
+        let frst = b.first!
+        XCTAssert(frst.body == a.body)
+        XCTAssert(frst.title == a.title)
+
+        let c: TitleBody? = try! Post.findOne()
+        XCTAssertNotNil(c)
+        if let cc = c {
+            XCTAssert(cc.body == a.body)
+            XCTAssert(cc.title == a.title)
+        } else {
+            XCTFail()
+        }
     }
 
 
     static var allTests = [
         ("testExample", testExample),
+        ("testFindBasic", testFindBasic),
+        ("testProjection", testProjection)
     ]
 }
+

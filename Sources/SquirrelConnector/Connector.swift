@@ -6,70 +6,57 @@
 //
 //
 
+import MongoKitten
+
+/// Database Connector
 public struct Connector {
     private init() {
-        
     }
 
-    private static var _connector: ConnectorProtocol? = nil
+    private static var _connector: MongoKitten.Database!
 
     /// Database connector used in models
-    public static var connector: ConnectorProtocol? {
+    public static var connector: MongoKitten.Database {
         return _connector
     }
 
-    /// Set connector
+    /// Set connector for database
     ///
-    /// - Parameter connector: connector to set
-    /// - Returns: true if previous connector was nil, otherwise false because connector can't be reset
-    public static func set(connector: ConnectorProtocol) -> Bool {
-        guard _connector == nil else {
+    /// - Parameters:
+    ///   - host: Host
+    ///   - port: Port (default 27017)
+    ///   - dbname: Database name (default squirrel)
+    /// - Returns: True if operation is successful
+    @discardableResult
+    public static func setConnector(host: String, port: Int = 27017, dbname: String = "squirrel") -> Bool {
+        do {
+            _connector = try MongoKitten.Database("mongodb://" + host + ":" + String(port) + "/" + dbname)
+        } catch {
             return false
         }
-        _connector = connector
         return true
     }
-}
 
-/// Database connector protocol
-public protocol ConnectorProtocol {
-    /// Init connector with given data
+    /// Set connector for database
     ///
-    /// - Parameter data: key value data for connector
-    /// - Throws: `Error if any of values are missing or invalid`
-    init(with data: [String: Any]) throws
-
-    /// Open connection
-    ///
-    /// - Throws: `ConnectionError` with kind: `ConnectorError.ErrorKind.cantOpenConnection`
-    func open() throws
-
-    /// Close connection
-    ///
-    /// - Throws: `ConnectionError` with kind: `ConnectorError.ErrorKind.cantCloseConnection`
-    func close() throws
-
-    func use() throws
-
-    /// Drop table from database
-    ///
-    /// - Parameter tableName: table name
-    /// - Throws: Connection and socket errors
-    func drop(tableName: String) throws
-
-    /// Create table in database from object
-    ///
-    /// - Parameter object: object template of new table
-    /// - Throws: Socket errors and `ConnectionError` with kind: `.cantCreateTable(name: String, reason: String)`
-    func create<T: ModelProtocol>(table object: T) throws
-
-    /// Store object to database if there is not already object with
-    /// same `id` otherwise updates object with same `id`
-    ///
-    /// - Parameter object: saving object
-    /// - Returns: `id` of stored object
-    /// - Throws: socket errors
-    func save<T: ModelProtocol>(table object: T) throws -> UInt
-
-    func deepSave<T: ModelProtocol>(table object: T) throws -> UInt
+    /// - Parameters:
+    ///   - username: Username
+    ///   - password: Password
+    ///   - host: Host
+    ///   - port: Port (default 27017)
+    ///   - dbname: Database name (default squirrel)
+    /// - Returns: True if operation is successful
+    @discardableResult
+    public static func setConnector(username: String,
+                                    password: String,
+                                    host: String,
+                                    port: Int = 27017,
+                                    dbname: String = "squirrel") -> Bool {
+        do {
+            _connector = try MongoKitten.Database("mongodb://\(username):\(password)@\(host):\(port)/\(dbname)")
+        } catch {
+            return false
+        }
+        return true
+    }
 }

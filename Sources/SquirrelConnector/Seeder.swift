@@ -6,11 +6,13 @@
 //
 //
 
-public protocol SeederProtocol {
+/// Seeder protocol
+public protocol Seeder {
+    /// Initialize seeder
     init()
 
     /// Theese models will be stored in database during seeding
-    var models: [ModelProtocol] { get }
+    var models: [Model] { get }
 
     /// Set up models variable, this method will be called before seeding
     ///

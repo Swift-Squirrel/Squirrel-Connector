@@ -6,69 +6,123 @@
 //
 //
 
-/// Model protocol
-public protocol ModelProtocol {
-    init()
+import MongoKitten
+import Foundation
+@_exported import MongoKitten
 
-    /// database id of model, 0 (zero) means not set
-    var id: UInt { get set }
+/// Model protocol
+public protocol Model: Codable {
+
+    /// database id of model
+    var id: ObjectId? { get set }
 }
 
 // MARK: - Model functions to work with database
-extension ModelProtocol {
+extension Model {
+    private static var modelName: String {
+        return String(describing: Self.self).lowercased() + "s"
+    }
+
+    private static var connector: MongoKitten.Database {
+        return Connector.connector
+    }
+
+    /// Collection of objects stored in database
+    public static var collection: MongoKitten.Collection {
+        return connector[modelName]
+    }
+
+    /// Json representation
+    public var json: String {
+        let encoder = JSONEncoder()
+        let data = try! encoder.encode(self) // swiftlint:disable:this force_try
+        return String(data: data, encoding: .utf8)!
+    }
 
     /// Prepare database to storing object of this type
     ///
-    /// - Throws: socket errors and `ConnectorError`
-    public final func create() throws {
-        guard let connector = Connector.connector else {
-            throw ConnectorError(kind: .noConnector)
-        }
-        try connector.open()
-        try connector.create(table: self)
-
+    /// - Throws: When unable to send the request/receive the response,
+    /// the authenticated user doesn’t have sufficient permissions or an error occurred
+    public static func create() throws {
+        try connector.createCollection(named: modelName)
     }
-
 
     /// Drop all objects of this type from database
     ///
-    /// - Throws: socket errors and `ConnectorError`
-    public final func drop() throws {
-        guard let connector = Connector.connector else {
-            throw ConnectorError(kind: .noConnector)
-        }
-        try connector.open()
-        let name = String(describing: type(of: self)) + "S"
-        try connector.drop(tableName: name)
+    /// - Throws: When unable to send the request/receive the response,
+    /// the authenticated user doesn’t have sufficient permissions or an error occurred
+    public static func drop() throws {
+        try collection.drop()
     }
 
+    /// Save object to database and set id
+    ///
+    /// - Note: If id is set this update or create existing object in database
+    ///
+    /// - Postconditions: `id` is not nil
+    ///
+    /// - Throws: Errors
+    public mutating func save() throws {
+        let collection = Self.collection
+        let a = convert(object: self)
+        var doc = Document(dictionaryElements: a)
+        let ref = try doc.upsert(into: collection)
 
-    /// Store object primitive values to database
-    ///
-    /// - Note: `id` is zero this set new `id`
-    /// 
-    /// - Important: This will not store arrays of type `ModelProtocol` if you want to save all attributes use `deepSave()`
-    ///
-    /// - Throws: socket errors and `ConnectorError`
-    mutating public final func save() throws {
-        guard let connector = Connector.connector else {
-            throw ConnectorError(kind: .noConnector)
+        if self.id == nil {
+            guard let newID = ref.id as? ObjectId else {
+                return
+            }
+            self.id = newID
         }
-        try connector.open()
-        self.id = try connector.save(table: self)
     }
 
-
-    /// Store object values to database (arrays of type `ModelProtocol` including)
+    /// Remove object from database
     ///
-    /// - Note: If `id` is zero this set new `id`
+    /// - Precondition: `id` is not nil
+    /// - Postcondition: `id` is nil
     ///
-    /// - Throws: socket errors and `ConnectorError`
-    mutating public final func deepSave() throws {
-        guard let connector = Connector.connector else {
-            throw ConnectorError(kind: .noConnector)
+    /// - Throws: Errors
+    public mutating func remove() throws {
+        guard let id = self.id else {
+            return
         }
-        try connector.open()
-        self.id = try connector.deepSave(table: self)
+        let collection = Self.collection
+        try collection.remove("_id" == id, limitedTo: 1)
+        self.id = nil
+    }
+}
+
+// MARK: - Array<Model> functions
+extension Array where Element: Model {
+    /// Json representation
+    public var json: String {
+        let encoder = JSONEncoder()
+        let data = try! encoder.encode(self) // swiftlint:disable:this force_try
+        return String(data: data, encoding: .utf8)!
+    }
+
+    /// Save object to database and set ids
+    ///
+    /// - Note: If id is set this update or create existing object in database
+    ///
+    /// - Postconditions: `id` is not nil
+    ///
+    /// - Throws: Errors
+    public mutating func saveAllDocuments() throws {
+        for index in 0..<count {
+            try self[index].save()
+        }
+    }
+
+    /// Remove objects from database
+    ///
+    /// - Precondition: `id` is not nil
+    /// - Postcondition: `id` is nil
+    ///
+    /// - Throws: Errors
+    public mutating func removeAllDocuments() throws {
+        for index in 0..<count {
+            try self[index].remove()
+        }
     }
 }
