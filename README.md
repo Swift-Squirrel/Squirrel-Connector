@@ -104,17 +104,6 @@ let titlesFromDatabase: [Title] = try Post.find() // returns only titles
 swift 4
 
 ```swift
-.package(url: "https://github.com/LeoNavel/Squirrel-Connector.git", from: "0.1.0"),
+.package(url: "https://github.com/LeoNavel/Squirrel-Connector.git", from: "0.1.1"),
 ```
-
-don't forget to run in console:
-
-```
-swift package edit CryptoSwift --revision swift4
-```
-
-it's because of we are using third party libraries which are not in swift4 by default
-
-
-
 

@@ -10,7 +10,7 @@ let package = Package(
             targets: ["SquirrelConnector"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/OpenKitten/MongoKitten.git", .branch("swift4")),
+        .package(url: "https://github.com/OpenKitten/MongoKitten.git", from: "4.0.13"),
     ],
     targets: [
         .target(
