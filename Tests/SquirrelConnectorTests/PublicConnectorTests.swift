@@ -11,6 +11,11 @@ import SquirrelConnector
 
 class PublicConnectorTests: XCTestCase {
     func testSave() {
+        let dbata = ["id": "59984722610934e182846e7b"]
+        let jsonDecoder = JSONDecoder()
+        let jsonData = try! JSONSerialization.data(withJSONObject: dbata)
+        XCTAssertNoThrow(_ = try! jsonDecoder.decode(ObjectId.self, from: jsonData))
+
         Connector.setConnector(host: "localhost", dbname: "exampledb")
         XCTAssertNoThrow(try Post.drop())
         var a = Post(title: "Dogs", body: "Dogs are not dogs!")

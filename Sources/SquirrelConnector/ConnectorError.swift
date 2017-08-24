@@ -13,6 +13,7 @@ public struct ConnectorError: Error, CustomStringConvertible {
     /// - noConnector: Connector is not set
     public enum ErrorKind {
         case noConnector
+        case missingID
     }
 
     /// Error kind
@@ -27,6 +28,8 @@ public struct ConnectorError: Error, CustomStringConvertible {
         switch kind {
         case .noConnector:
             return "Connector is not set"
+        case .missingID:
+            return "Missing 'id' key in dictionary"
         }
     }
 }

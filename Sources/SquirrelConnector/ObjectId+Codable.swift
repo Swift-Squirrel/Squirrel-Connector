@@ -10,14 +10,24 @@ import Foundation
 
 // MARK: - ObjectId Codable
 extension ObjectId: Codable {
-    /// Decoder
+    /// Decoder excepcting `String` value or `[String: String]` value with key `id` or `$oid`
     ///
     /// - Parameter decoder: decoder
     /// - Throws: If value is not correct hexString or decoding errors
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        try self.init(value)
+        if let value = try? container.decode(String.self) {
+            try self.init(value)
+        } else {
+            let value = try container.decode([String: String].self)
+            if let id = value["id"] {
+                try self.init(id)
+            } else if let id = value["$oid"] {
+                try self.init(id)
+            } else {
+                throw ConnectorError(kind: .missingID)
+            }
+        }
     }
 
     /// Ecoder
