@@ -14,5 +14,6 @@ variable_name:
     - id
       
 line_length:
-  - 120 # warning
-  - 160 # error
+  - 100 # warning
+  - 130 # error
+
