@@ -71,3 +71,6 @@ fastlane/test_output
 
 # Mac OS
 .DS_Store
+
+# Tests
+SquirrelConnectorCache/
