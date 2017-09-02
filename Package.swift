@@ -11,7 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/OpenKitten/MongoKitten.git", from: "4.0.13"),
-        .package(url: "https://github.com/LeoNavel/Cache.git", from: "4.0.0")
+        .package(url: "https://github.com/LeoNavel/Cache.git", from: "4.0.2")
     ],
     targets: [
         .target(
