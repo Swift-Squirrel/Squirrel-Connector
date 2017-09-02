@@ -25,11 +25,11 @@ Connector.setConnector(username: String, password: String,
 extension Model {
     static func find<T>(_ filter: Query? = nil, sortedBy sort: Sort? = nil, 
         collation: Collation? = nil, skipping skip: Int? = nil, limitedTo limit: Int? = nil)
-        throws -> [T] where T: Codable
+        throws -> [T] where T: Presentable
         
     static func findOne<T>(_ filter: Query? = nil, sortedBy sort: Sort? = nil,
           collation: Collation? = nil, skipping skip: Int? = nil) 
-          throws -> T? where T: Codable
+          throws -> T? where T: Presentable
     
     static var collection: MongoKitten.Collection { get }
     
@@ -75,6 +75,15 @@ struct Post: Model {
 }
 ```
 
+### Presentable
+Presentable struct can be used as expected projection as result of `find` method
+
+```swift
+public protocol Presentable {
+    init()
+}
+```
+
 ### Model examples
 
 ```swift
@@ -89,15 +98,50 @@ try post.save() // save Dogs post to database
 
 let postsFromDatabase = try Post.find("title" == "Dogs") // returns [Post] where title is "Dogs"
 
-struct Title: Codable {
+struct Title: Presentable {
     var title: String
 }
 
 let titlesFromDatabase: [Title] = try Post.find() // returns only titles
 ```
 
+### Cache
+Squirrel Connector uses caches to store `Projection` of `Presentable` object
+
+```swift
+public struct SquirrelConnectorCache {
+
+    /// Default name for cache
+    public static let defaultName = "ProjectionCache"
+
+    /// Set projection cache manager
+    ///
+    /// - Parameter specializedCache: Cache manager
+    public static func setProjectionCache(specializedCache: SpecializedCache<Projection>)
+
+    /// Total disk size
+    public static var totalDiskSize: UInt64 { get }
+
+    /// Name of cache
+    public static var name: String { get }
+
+    /// Path of cache directory
+    public static var path: String { get }
+
+    /// Clears the front and back cache storages.
+    ///
+    /// - Parameter keepRoot: Pass `true` to keep the existing disk cache directory
+    /// after removing its contents. The default value is `false`.
+    public static func clear(keepingRootDirectory keepRoot: Bool = false)
+
+    /// Clears all expired objects from front and back storages.
+    public static func clearExpired()
+}
+```
+
 ## See Also
-- MongoKitten (https://github.com/OpenKitten/MongoKitten)
+- [MongoKitten](https://github.com/OpenKitten/MongoKitten) Native MongoDB driver for Swift, written in Swift 
+- [Cache](https://github.com/LeoNavel/Cache) 📦 Nothing but Cache. 
 
 ## Installation
 

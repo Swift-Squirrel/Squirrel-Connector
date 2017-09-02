@@ -14,8 +14,8 @@ struct Post: Model {
 
     var id: ObjectId? = nil
     var cmnt = Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "commment")
-    var title: String
-    var body: String
+    var title: String = ""
+    var body: String = ""
     var comments: [Comment] = []
     var created = Date()
     var modified = Date()
@@ -69,9 +69,9 @@ class SquirrelConnectorTests: XCTestCase {
     }
 
     func testProjection() {
-        struct TitleBody: Codable {
-            var title: String
-            var body: String
+        struct TitleBody: Projectable {
+            var title: String = ""
+            var body: String = ""
         }
         Connector.setConnector(host: "localhost", dbname: "exampledb")
         var a = Post(title: "Dogs", body: "Dogs are not cats!")

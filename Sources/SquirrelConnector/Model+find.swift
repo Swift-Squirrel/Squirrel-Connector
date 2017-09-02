@@ -25,14 +25,14 @@ extension Model {
                                sortedBy sort: Sort? = nil,
                                collation: Collation? = nil,
                                skipping skip: Int? = nil,
-                               limitedTo limit: Int? = nil) throws -> [T] where T: Codable {
-
+                               limitedTo limit: Int? = nil) throws -> [T] where T: Projectable {
+        let projection = T.projection
         return try findMore(filter,
                             sortedBy: sort,
                             collation: collation,
                             skipping: skip,
                             limitedTo: limit,
-                            projection: [T].self)
+                            projecting: projection)
     }
 
     /// Find all documents from collection
@@ -55,8 +55,7 @@ extension Model {
                             sortedBy: sort,
                             collation: collation,
                             skipping: skip,
-                            limitedTo: limit,
-                            projection: [Self].self)
+                            limitedTo: limit)
     }
 
     private static func findMore<T>(_ filter: Query? = nil,
@@ -64,10 +63,12 @@ extension Model {
                                     collation: Collation? = nil,
                                     skipping skip: Int? = nil,
                                     limitedTo limit: Int? = nil,
-                                    projection: T.Type) throws -> T where T: Codable {
+                                    projecting projection: Projection? = nil
+        ) throws -> [T] where T: Decodable {
 
         let documents = try collection.find(filter,
                                             sortedBy: sort,
+                                            projecting: projection,
                                             collation: collation,
                                             skipping: skip,
                                             limitedTo: limit)
@@ -75,7 +76,7 @@ extension Model {
         let data: [Any] = documents.map({ return convertToJSON(document: $0) })
         let jsonDecoder = JSONDecoder()
         let jsonData = try JSONSerialization.data(withJSONObject: data)
-        return try jsonDecoder.decode(projection, from: jsonData)
+        return try jsonDecoder.decode([T].self, from: jsonData)
     }
 
     /// Find first matching document and project it to expected result
@@ -90,9 +91,15 @@ extension Model {
     public static func findOne<T>(_ filter: Query? = nil,
                                   sortedBy sort: Sort? = nil,
                                   collation: Collation? = nil,
-                                  skipping skip: Int? = nil) throws -> T? where T: Codable {
+                                  skipping skip: Int? = nil) throws -> T? where T: Projectable {
 
-        return try findOne(filter, sortedBy: sort, collation: collation, skipping: skip, projection: T.self)
+        let projection = T.projection
+        return try findOneDocument(
+            filter,
+            sortedBy: sort,
+            projecting: projection,
+            collation: collation,
+            skipping: skip)
     }
 
     /// Find first matching document
@@ -109,21 +116,27 @@ extension Model {
                                collation: Collation? = nil,
                                skipping skip: Int? = nil) throws -> Self? {
 
-        return try findOne(filter, sortedBy: sort, collation: collation, skipping: skip, projection: Self.self)
+        return try findOneDocument(filter, sortedBy: sort, collation: collation, skipping: skip)
     }
 
-    private static func findOne<T>(_ filter: Query? = nil,
+    private static func findOneDocument<T>(_ filter: Query? = nil,
                                    sortedBy sort: Sort? = nil,
+                                   projecting projection: Projection? = nil,
                                    collation: Collation? = nil,
-                                   skipping skip: Int? = nil,
-                                   projection: T.Type) throws -> T? where T: Codable {
+                                   skipping skip: Int? = nil) throws -> T? where T: Codable {
 
-        guard let document = try collection.findOne(filter, sortedBy: sort, skipping: skip, collation: collation) else {
+        guard let document = try collection.findOne(
+            filter,
+            sortedBy: sort,
+            projecting: projection,
+            skipping: skip,
+            collation: collation) else {
+
             return nil
         }
         let data: Any = convertToJSON(document: document)
         let jsonDecoder = JSONDecoder()
         let jsonData = try JSONSerialization.data(withJSONObject: data)
-        return try jsonDecoder.decode(projection, from: jsonData)
+        return try jsonDecoder.decode(T.self, from: jsonData)
     }
 }

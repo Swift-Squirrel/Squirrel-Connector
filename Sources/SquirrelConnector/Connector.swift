@@ -28,9 +28,13 @@ public struct Connector {
     ///   - dbname: Database name (default squirrel)
     /// - Returns: True if operation is successful
     @discardableResult
-    public static func setConnector(host: String, port: Int = 27017, dbname: String = "squirrel") -> Bool {
+    public static func setConnector(
+        host: String,
+        port: Int = 27017,
+        dbname: String = "squirrel") -> Bool {
+
         do {
-            _connector = try MongoKitten.Database("mongodb://" + host + ":" + String(port) + "/" + dbname)
+            _connector = try MongoKitten.Database("mongodb://\(host):\(port)/\(dbname)")
         } catch {
             return false
         }
@@ -53,7 +57,8 @@ public struct Connector {
                                     port: Int = 27017,
                                     dbname: String = "squirrel") -> Bool {
         do {
-            _connector = try MongoKitten.Database("mongodb://\(username):\(password)@\(host):\(port)/\(dbname)")
+            _connector = try MongoKitten.Database(
+                "mongodb://\(username):\(password)@\(host):\(port)/\(dbname)")
         } catch {
             return false
         }
