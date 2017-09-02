@@ -148,6 +148,6 @@ public struct SquirrelConnectorCache {
 swift 4
 
 ```swift
-.package(url: "https://github.com/LeoNavel/Squirrel-Connector.git", from: "0.1.1"),
+.package(url: "https://github.com/LeoNavel/Squirrel-Connector.git", from: "0.1.3"),
 ```
 
