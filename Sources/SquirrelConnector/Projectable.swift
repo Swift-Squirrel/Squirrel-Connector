@@ -14,6 +14,7 @@ public protocol Projectable: Codable {
 
 extension Projectable {
     static var projection: Projection {
+        let cache = SquirrelConnectorCache.cache
         let name = String(describing: type(of: self))
 
         if let projection = cache.object(forKey: name) {

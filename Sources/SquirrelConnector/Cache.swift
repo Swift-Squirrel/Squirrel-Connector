@@ -9,14 +9,49 @@ import Cache
 import MongoKitten
 import Foundation
 
-/// Set projection cache manager
-///
-/// - Parameter specializedCache: Cache manager
-public func setProjectionCache(specializedCache: SpecializedCache<Projection>) {
-    cache = specializedCache
-}
+/// Squirrel connector cache
+public struct SquirrelConnectorCache {
 
-var cache: SpecializedCache<Projection> = SpecializedCache(name: "ProjectionCache")
+    /// Default name for cache
+    public static let defaultName = "ProjectionCache"
+
+    static var cache: SpecializedCache<Projection> = SpecializedCache(name: defaultName)
+
+    /// Set projection cache manager
+    ///
+    /// - Parameter specializedCache: Cache manager
+    public static func setProjectionCache(specializedCache: SpecializedCache<Projection>) {
+        cache = specializedCache
+    }
+
+    /// Total disk size
+    public static var totalDiskSize: UInt64 {
+        return (try? cache.totalDiskSize()) ?? 0
+    }
+
+    /// Name of cache
+    public static var name: String {
+        return cache.name
+    }
+
+    /// Path of cache directory
+    public static var path: String {
+        return cache.path
+    }
+
+    /// Clears the front and back cache storages.
+    ///
+    /// - Parameter keepRoot: Pass `true` to keep the existing disk cache directory
+    /// after removing its contents. The default value is `false`.
+    public static func clear(keepingRootDirectory keepRoot: Bool = false) {
+        try? cache.clear(keepingRootDirectory: keepRoot)
+    }
+
+    /// Clears all expired objects from front and back storages.
+    public static func clearExpired() {
+        try? cache.clearExpired()
+    }
+}
 
 extension Projection {
     init(attributes: [String]) {

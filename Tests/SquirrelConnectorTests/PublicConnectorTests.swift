@@ -20,16 +20,11 @@ class PublicConnectorTests: XCTestCase {
         Connector.setConnector(host: "localhost", dbname: "exampledb")
         XCTAssertNoThrow(try Post.drop())
         var a = Post(title: "Dogs", body: "Dogs are not dogs!")
-//        a.comments = [
-//            Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "blah"),
-//            Comment(user: try! ObjectId("59984722610934e182846e7e"), comment: "blah blach")
-//        ]
         XCTAssertNil(a.id)
         XCTAssertNoThrow(try a.save())
         XCTAssertNotNil(a.id)
         let id = a.id
         a.body = "Dogs are not cats!"
-//        a.comments.append(Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "nah"))
         XCTAssertNotNil(a.id)
         XCTAssertNoThrow(try a.save())
         XCTAssertNotNil(a.id)
@@ -53,7 +48,8 @@ class PublicConnectorTests: XCTestCase {
             XCTAssertNoThrow(try post.save())
 
             let config = Config(expiry: .seconds(3600), cacheDirectory: FileManager.default.currentDirectoryPath + "/SquirrelConnectorCache")
-            setProjectionCache(specializedCache: SpecializedCache(name: "ProjectionCache", config: config))
+            SquirrelConnectorCache.setProjectionCache(specializedCache: SpecializedCache(name: "ProjectionCache", config: config))
+            
             guard let res: proj = try Post.findOne() else {
                 XCTFail()
                 return
@@ -70,7 +66,8 @@ class PublicConnectorTests: XCTestCase {
         } catch let error {
             XCTFail(String(describing: error))
         }
-        setProjectionCache(specializedCache: SpecializedCache(name: "ProjectionCache"))
+
+        SquirrelConnectorCache.setProjectionCache(specializedCache: SpecializedCache(name: "ProjectionCache"))
     }
 
     static var allTests = [
