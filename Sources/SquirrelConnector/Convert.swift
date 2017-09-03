@@ -90,7 +90,7 @@ func convertToJSON(document: Document) -> [String: Any] {
         case let id as ObjectId:
             res[key] = id.hexString
         case let date as Date:
-            res[key] = Double(date.timeIntervalSince1970)
+            res[key] = Double(date.timeIntervalSinceReferenceDate)
         default:
             res[key] = value
         }
@@ -124,7 +124,7 @@ func convertToJSONAny(document: Document) -> Any {
             case let id as ObjectId:
                 res[key] = id.hexString
             case let date as Date:
-                res[key] = Double(date.timeIntervalSince1970)
+                res[key] = Double(date.timeIntervalSinceReferenceDate)
             default:
                 res[key] = value
             }
