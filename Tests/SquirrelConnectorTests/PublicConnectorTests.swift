@@ -66,8 +66,9 @@ class PublicConnectorTests: XCTestCase {
         } catch let error {
             XCTFail(String(describing: error))
         }
-
+        SquirrelConnectorCache.clear()
         SquirrelConnectorCache.setProjectionCache(specializedCache: SpecializedCache(name: "ProjectionCache"))
+        SquirrelConnectorCache.clear()
     }
 
     static var allTests = [

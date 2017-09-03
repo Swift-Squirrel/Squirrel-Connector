@@ -94,11 +94,31 @@ class SquirrelConnectorTests: XCTestCase {
         }
     }
 
+    func testDate() {
+        struct Created: Projectable {
+            let created: Date = Date()
+        }
+        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        var a = Post(title: "Dogs", body: "Dogs are not cats!")
+        XCTAssertNoThrow(try Post.drop())
+        XCTAssertNoThrow(try a.save())
+
+        guard let b: Created = try! Post.findOne() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssert(Int64(a.created.timeIntervalSince1970) == Int64(b.created.timeIntervalSince1970))
+        XCTAssert(a.created.description(with: .current) == b.created.description(with: .current))
+
+        XCTAssertNoThrow(try Post.drop())
+    }
 
     static var allTests = [
         ("testExample", testExample),
         ("testFindBasic", testFindBasic),
-        ("testProjection", testProjection)
+        ("testProjection", testProjection),
+        ("testDate", testDate)
     ]
 }
 
