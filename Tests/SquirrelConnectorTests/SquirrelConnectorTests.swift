@@ -108,9 +108,11 @@ class SquirrelConnectorTests: XCTestCase {
             return
         }
 
+        XCTAssert(Int64(a.created.timeIntervalSince1970) == Int64(b.created.timeIntervalSince1970))
         XCTAssert(a.created.description(with: .current) == b.created.description(with: .current))
-    }
 
+        XCTAssertNoThrow(try Post.drop())
+    }
 
     static var allTests = [
         ("testExample", testExample),

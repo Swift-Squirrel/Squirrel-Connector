@@ -76,7 +76,6 @@ extension Model {
         let data: [Any] = documents.map({ return convertToJSON(document: $0) })
         let jsonDecoder = JSONDecoder()
         let jsonData = try JSONSerialization.data(withJSONObject: data)
-        jsonDecoder.dataDecodingStrategy = .deferredToData
         return try jsonDecoder.decode([T].self, from: jsonData)
     }
 
@@ -137,7 +136,6 @@ extension Model {
         }
         let data: Any = convertToJSON(document: document)
         let jsonDecoder = JSONDecoder()
-        jsonDecoder.dataDecodingStrategy = .deferredToData
         let jsonData = try JSONSerialization.data(withJSONObject: data)
         return try jsonDecoder.decode(T.self, from: jsonData)
     }
