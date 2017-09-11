@@ -19,7 +19,9 @@ public struct SquirrelConnectorCache {
 
     /// Set projection cache manager
     ///
-    /// - Parameter specializedCache: Cache manager
+    /// - Parameters:
+    ///   - name: name of cache folder
+    ///   - config: Configuration
     public static func setProjectionCache(name: String = defaultName, config: Config) {
         cache = SpecializedCache(name: name, config: config)
     }

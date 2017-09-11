@@ -123,8 +123,10 @@ public struct SquirrelConnectorCache {
 
     /// Set projection cache manager
     ///
-    /// - Parameter specializedCache: Cache manager
-    public static func setProjectionCache(specializedCache: SpecializedCache<Projection>)
+    /// - Parameters:
+    ///   - name: name of cache folder
+    ///   - config: Configuration
+    public static func setProjectionCache(name: String = defaultName, config: Config) {
 
     /// Total disk size
     public static var totalDiskSize: UInt64 { get }
