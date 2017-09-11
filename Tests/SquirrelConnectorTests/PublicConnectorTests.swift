@@ -48,7 +48,7 @@ class PublicConnectorTests: XCTestCase {
             XCTAssertNoThrow(try post.save())
 
             let config = Config(expiry: .seconds(3600), cacheDirectory: FileManager.default.currentDirectoryPath + "/SquirrelConnectorCache")
-            SquirrelConnectorCache.setProjectionCache(specializedCache: SpecializedCache(name: "ProjectionCache", config: config))
+            SquirrelConnectorCache.setProjectionCache(name: "ProjectionCache", config: config)
             
             guard let res: proj = try Post.findOne() else {
                 XCTFail()
@@ -67,7 +67,7 @@ class PublicConnectorTests: XCTestCase {
             XCTFail(String(describing: error))
         }
         SquirrelConnectorCache.clear()
-        SquirrelConnectorCache.setProjectionCache(specializedCache: SpecializedCache(name: "ProjectionCache"))
+        SquirrelConnectorCache.setProjectionCache(config: Config())
         SquirrelConnectorCache.clear()
     }
 
