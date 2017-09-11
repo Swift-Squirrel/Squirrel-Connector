@@ -20,8 +20,8 @@ public struct SquirrelConnectorCache {
     /// Set projection cache manager
     ///
     /// - Parameter specializedCache: Cache manager
-    public static func setProjectionCache(specializedCache: SpecializedCache<Projection>) {
-        cache = specializedCache
+    public static func setProjectionCache(name: String = defaultName, config: Config) {
+        cache = SpecializedCache(name: name, config: config)
     }
 
     /// Total disk size
