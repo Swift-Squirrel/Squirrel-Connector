@@ -20,6 +20,8 @@ import SquirrelConnector
 ### Set connector
 
 ```swift
+Connector.setConnector(url: String)
+//or
 Connector.setConnector(host: String, port: Int = 27017, dbname: String = "squirrel")
 // or
 Connector.setConnector(username: String, password: String,
@@ -157,6 +159,6 @@ public struct SquirrelConnectorCache {
 swift 4
 
 ```swift
-.package(url: "https://github.com/Swift-Squirrel/Squirrel-Connector.git", from: "0.1.5"),
+.package(url: "https://github.com/Swift-Squirrel/Squirrel-Connector.git", from: "0.1.8"),
 ```
 
