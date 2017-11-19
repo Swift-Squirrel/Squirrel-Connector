@@ -23,7 +23,10 @@ struct Post: Model {
 
 class SquirrelConnectorTests: XCTestCase {
     func testExample() {
-        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
+            XCTFail()
+            return
+        }
         XCTAssertNoThrow(try Post.drop())
         var a = Post(title: "Dogs", body: "Dogs are not dogs!")
         a.comments = [
@@ -42,7 +45,10 @@ class SquirrelConnectorTests: XCTestCase {
     }
 
     func testFindBasic() {
-        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
+            XCTFail()
+            return
+        }
         var a = Post(title: "Dogs", body: "Dogs are not cats!")
         a.comments.append(Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "blah"))
         XCTAssertNoThrow(try Post.drop())
@@ -73,7 +79,10 @@ class SquirrelConnectorTests: XCTestCase {
             var title: String = ""
             var body: String = ""
         }
-        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
+            XCTFail()
+            return
+        }
         var a = Post(title: "Dogs", body: "Dogs are not cats!")
         a.comments.append(Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "blah"))
         XCTAssertNoThrow(try Post.drop())
@@ -98,7 +107,10 @@ class SquirrelConnectorTests: XCTestCase {
         struct Created: Projectable {
             let created: Date = Date()
         }
-        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
+            XCTFail()
+            return
+        }
         var a = Post(title: "Dogs", body: "Dogs are not cats!")
         XCTAssertNoThrow(try Post.drop())
         XCTAssertNoThrow(try a.save())

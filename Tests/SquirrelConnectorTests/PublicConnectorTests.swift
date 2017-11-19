@@ -12,7 +12,10 @@ import Cache
 
 class PublicConnectorTests: XCTestCase {
     func testSave() {
-        Connector.setConnector(host: "localhost", dbname: "exampledb")
+        guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
+            XCTFail()
+            return
+        }
         XCTAssertNoThrow(try Post.drop())
         var a = Post(title: "Dogs", body: "Dogs are not dogs!")
         XCTAssertNil(a.id)
@@ -37,7 +40,10 @@ class PublicConnectorTests: XCTestCase {
                     title = ""
                 }
             }
-            Connector.setConnector(host: "localhost")
+            guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
+                XCTFail()
+                return
+            }
             XCTAssertNoThrow(try Post.drop())
             var post = Post(title: "Titliq", body: "Body")
             XCTAssertNoThrow(try post.save())
