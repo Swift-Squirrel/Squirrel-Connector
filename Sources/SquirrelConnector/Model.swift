@@ -64,8 +64,9 @@ extension Model {
     /// - Throws: Errors
     public mutating func save() throws {
         let collection = Self.collection
-        let a = convert(object: self)
-        var doc = Document(dictionaryElements: a)
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(self)
+        var doc = try Document(extendedJSON: Array(data))!
         let ref = try doc.upsert(into: collection)
 
         if self.id == nil {
