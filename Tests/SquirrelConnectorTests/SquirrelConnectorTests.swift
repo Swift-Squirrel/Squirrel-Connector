@@ -44,6 +44,40 @@ class SquirrelConnectorTests: XCTestCase {
         XCTAssertTrue(id == a._id)
     }
 
+    func testSave() {
+        XCTAssertNoThrow(try Post.drop())
+        var count = 12421
+        XCTAssertNoThrow(count = try Post.find().count)
+        XCTAssertEqual(count, 0)
+        var a = Post(title: "Squirrels", body: "asd")
+        XCTAssertNil(a._id)
+        XCTAssertEqual(a.title, "Squirrels")
+
+        XCTAssertNoThrow(try a.save())
+
+        XCTAssertNoThrow(count = try Post.find().count)
+        XCTAssertEqual(count, 1)
+
+        XCTAssertEqual(a.title, "Squirrels")
+        XCTAssertNotNil(a._id)
+        guard let aid = a._id else {
+            XCTFail()
+            return
+        }
+        a.title = "Dogs"
+        XCTAssertEqual(a.title, "Dogs")
+        XCTAssertNoThrow(try a.save())
+        XCTAssertNotNil(a._id)
+        XCTAssertEqual(a._id, aid)
+
+        XCTAssertNoThrow(count = try Post.find().count)
+        XCTAssertEqual(count, 1)
+
+
+
+
+    }
+
     func testFindBasic() {
         guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
             XCTFail()
@@ -105,7 +139,10 @@ class SquirrelConnectorTests: XCTestCase {
 
     func testDate() {
         struct Created: Projectable {
-            let created: Date = Date()
+            let created: Date
+            init() {
+                self.created = Date()
+            }
         }
         guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
             XCTFail()
@@ -130,7 +167,8 @@ class SquirrelConnectorTests: XCTestCase {
         ("testExample", testExample),
         ("testFindBasic", testFindBasic),
         ("testProjection", testProjection),
-        ("testDate", testDate)
+        ("testDate", testDate),
+        ("testSave", testSave)
     ]
 }
 
