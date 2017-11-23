@@ -18,7 +18,7 @@ func convert<T>(object: T) -> [(String, MongoKitten.Primitive?)] where T: Model 
             continue
         }
 
-        if name == "id" {
+        if name == "_id" {
             if let value = child.value as? ObjectId {
                 res.append(("_id", value))
             }
@@ -80,10 +80,10 @@ func convertDic<T>(dic: T) -> [String: MongoKitten.Primitive] {
 func convertToJSON(document: Document) -> [String: Any] {
     var res: [String: Any] = [:]
     for (key, value) in document {
-        var key = key
-        if key == "_id" {
-            key = "id"
-        }
+//        var key = key
+//        if key == "_id" {
+//            key = "id"
+//        }
         switch value {
         case let doc as Document:
             res[key] = convertToJSONAny(document: doc)
@@ -114,10 +114,10 @@ func convertToJSONAny(document: Document) -> Any {
     } else {
         var res: [String: Any] = [:]
         for (key, value) in document {
-            var key = key
-            if key == "_id" {
-                key = "id"
-            }
+//            var key = key
+//            if key == "_id" {
+//                key = "id"
+//            }
             switch value {
             case let doc as Document:
                 res[key] = convertToJSONAny(document: doc)

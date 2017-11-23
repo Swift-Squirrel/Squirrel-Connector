@@ -11,7 +11,7 @@ import SquirrelConnector
 import Cache
 
 class User: Model {
-    var id: ObjectId? = nil
+    var _id: ObjectId? = nil
     var username: String
     var role: Role
 
@@ -34,25 +34,25 @@ class PublicConnectorTests: XCTestCase {
         }
         XCTAssertNoThrow(try Post.drop())
         var a = Post(title: "Dogs", body: "Dogs are not dogs!")
-        XCTAssertNil(a.id)
+        XCTAssertNil(a._id)
         XCTAssertNoThrow(try a.save())
-        XCTAssertNotNil(a.id)
-        let id = a.id
+        XCTAssertNotNil(a._id)
+        let id = a._id
         a.body = "Dogs are not cats!"
-        XCTAssertNotNil(a.id)
+        XCTAssertNotNil(a._id)
         XCTAssertNoThrow(try a.save())
-        XCTAssertNotNil(a.id)
-        XCTAssertTrue(id == a.id)
+        XCTAssertNotNil(a._id)
+        XCTAssertTrue(id == a._id)
     }
 
     func testMongoProjection() {
         do {
             struct proj: Projectable {
-                let id: ObjectId?
+                let _id: ObjectId?
                 let title: String
 
                 init() {
-                    id = nil
+                    _id = nil
                     title = ""
                 }
             }
@@ -75,9 +75,9 @@ class PublicConnectorTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssert(res.id == tmp.id)
+            XCTAssert(res._id == tmp._id)
             XCTAssert(res.title == tmp.title)
-            XCTAssert(res.id == post.id)
+            XCTAssert(res._id == post._id)
             XCTAssert(res.title == post.title)
 
         } catch let error {
@@ -95,9 +95,9 @@ class PublicConnectorTests: XCTestCase {
         }
         XCTAssertNoThrow(try User.drop())
         var a = User(username: "Admin", role: .admin)
-        XCTAssertNil(a.id)
+        XCTAssertNil(a._id)
         XCTAssertNoThrow(try a.save())
-        XCTAssertNotNil(a.id)
+        XCTAssertNotNil(a._id)
 
         struct Role: Projectable {
             let role: User.Role
@@ -106,7 +106,7 @@ class PublicConnectorTests: XCTestCase {
             }
         }
         var b: Role? = nil
-        XCTAssertNoThrow(b = try User.findOne("_id" == a.id!))
+        XCTAssertNoThrow(b = try User.findOne("_id" == a._id!))
 
         guard let c = b else {
             XCTFail()
@@ -115,12 +115,12 @@ class PublicConnectorTests: XCTestCase {
 
         XCTAssertEqual(c.role, a.role)
         var aa = User(username: "User", role: .user)
-        XCTAssertNil(aa.id)
+        XCTAssertNil(aa._id)
         XCTAssertNoThrow(try aa.save())
-        XCTAssertNotNil(aa.id)
+        XCTAssertNotNil(aa._id)
 
         var bb: Role? = nil
-        XCTAssertNoThrow(bb = try User.findOne("_id" == aa.id!))
+        XCTAssertNoThrow(bb = try User.findOne("_id" == aa._id!))
 
         guard let cc = bb else {
             XCTFail()

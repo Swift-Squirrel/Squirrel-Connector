@@ -14,7 +14,7 @@ import Foundation
 public protocol Model: Codable {
 
     /// database id of model
-    var id: ObjectId? { get set }
+    var _id: ObjectId? { get set }
 }
 
 // MARK: - Model functions to work with database
@@ -69,11 +69,11 @@ extension Model {
         var doc = try Document(extendedJSON: Array(data))!
         let ref = try doc.upsert(into: collection)
 
-        if self.id == nil {
+        if self._id == nil {
             guard let newID = ref.id as? ObjectId else {
                 return
             }
-            self.id = newID
+            self._id = newID
         }
     }
 
@@ -84,12 +84,12 @@ extension Model {
     ///
     /// - Throws: Errors
     public mutating func remove() throws {
-        guard let id = self.id else {
+        guard let id = self._id else {
             return
         }
         let collection = Self.collection
         try collection.remove("_id" == id, limitedTo: 1)
-        self.id = nil
+        self._id = nil
     }
 }
 

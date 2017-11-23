@@ -12,7 +12,7 @@ struct Post: Model {
         self.body = body
     }
 
-    var id: ObjectId? = nil
+    var _id: ObjectId? = nil
     var cmnt = Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "commment")
     var title: String = ""
     var body: String = ""
@@ -33,15 +33,15 @@ class SquirrelConnectorTests: XCTestCase {
             Comment(user: try! ObjectId("59984722610934e182846e7b"), comment: "blah"),
             Comment(user: try! ObjectId("59984722610934e182846e7e"), comment: "blah blach")
         ]
-        XCTAssertNil(a.id)
+        XCTAssertNil(a._id)
         XCTAssertNoThrow(try a.save())
-        XCTAssertNotNil(a.id)
-        let id = a.id
+        XCTAssertNotNil(a._id)
+        let id = a._id
         a.body = "Dogs are not cats!"
-        XCTAssertNotNil(a.id)
+        XCTAssertNotNil(a._id)
         XCTAssertNoThrow(try a.save())
-        XCTAssertNotNil(a.id)
-        XCTAssertTrue(id == a.id)
+        XCTAssertNotNil(a._id)
+        XCTAssertTrue(id == a._id)
     }
 
     func testFindBasic() {
@@ -55,7 +55,7 @@ class SquirrelConnectorTests: XCTestCase {
         XCTAssertNoThrow(try a.save())
         var b = try! Post.find()
         XCTAssertNotNil(b.first)
-        XCTAssert(b.first!.id! == a.id!)
+        XCTAssert(b.first!._id! == a._id!)
         let encoder = JSONEncoder()
         let data = try! encoder.encode(b)
         let str = String(data: data, encoding: .utf8)!
@@ -64,14 +64,14 @@ class SquirrelConnectorTests: XCTestCase {
         let c = try! Post.findOne()
         XCTAssertNotNil(c)
         if let cc = c {
-            XCTAssert(cc.id == a.id)
+            XCTAssert(cc._id == a._id)
             XCTAssert(cc.title == a.title)
         } else {
             XCTFail()
         }
 
         XCTAssertNoThrow(try b.removeAllDocuments())
-        XCTAssert(b.first!.id == nil)
+        XCTAssert(b.first!._id == nil)
     }
 
     func testProjection() {
