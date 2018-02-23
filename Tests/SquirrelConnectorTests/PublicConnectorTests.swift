@@ -8,7 +8,7 @@
 
 import XCTest
 import SquirrelConnector
-import Cache
+import SquirrelCache
 
 class User: Model {
     var _id: ObjectId? = nil
