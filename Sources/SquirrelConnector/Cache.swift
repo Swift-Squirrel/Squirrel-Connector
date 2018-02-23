@@ -5,7 +5,7 @@
 //  Created by Filip Klembara on 8/30/17.
 //
 
-import Cache
+import SquirrelCache
 import MongoKitten
 import Foundation
 
