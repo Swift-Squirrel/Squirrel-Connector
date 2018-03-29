@@ -25,7 +25,8 @@ extension Model {
                                sortedBy sort: Sort? = nil,
                                collation: Collation? = nil,
                                skipping skip: Int? = nil,
-                               limitedTo limit: Int? = nil) throws -> [T] where T: Projectable {
+                               limitedTo limit: Int? = nil,
+                               resultType: T.Type = T.self) throws -> [T] where T: Projectable {
         let projection = T.projection
         return try findMore(filter,
                             sortedBy: sort,
@@ -91,7 +92,8 @@ extension Model {
     public static func findOne<T>(_ filter: Query? = nil,
                                   sortedBy sort: Sort? = nil,
                                   collation: Collation? = nil,
-                                  skipping skip: Int? = nil) throws -> T? where T: Projectable {
+                                  skipping skip: Int? = nil,
+                                  resultType: T.Type = T.self) throws -> T? where T: Projectable {
 
         let projection = T.projection
         return try findOneDocument(
@@ -138,5 +140,21 @@ extension Model {
         let jsonDecoder = JSONDecoder()
         let jsonData = try JSONSerialization.data(withJSONObject: data)
         return try jsonDecoder.decode(T.self, from: jsonData)
+    }
+}
+
+public extension Model {
+    public static func distinct<T: Primitive>(on key: String,
+                                filtering query: Query? = nil,
+                                readConcern: ReadConcern? = nil,
+                                collation: Collation? = nil,
+                                resultType: T.Type = T.self) throws -> [T] {
+        guard let res = try collection.distinct(on: key,
+                                                filtering: query,
+                                                readConcern: readConcern,
+                                                collation: collation) else {
+                                                    return []
+        }
+        return res.flatMap { $0 as? T }
     }
 }

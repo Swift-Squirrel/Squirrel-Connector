@@ -133,9 +133,51 @@ class PublicConnectorTests: XCTestCase {
         XCTAssertNotEqual(aa.role, a.role)
     }
 
+    func testDistinct() {
+        guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
+            XCTFail()
+            return
+        }
+        struct Car: Model {
+            var _id: ObjectId? = nil
+            let color: String
+            let year: UInt
+            init(color: String, year: UInt) {
+                self.color = color
+                self.year = year
+            }
+        }
+        var models = [
+            Car(color: "White", year: 1999),
+            Car(color: "Red", year: 1993),
+            Car(color: "Blue", year: 2000),
+            Car(color: "Blue", year: 2004),
+            Car(color: "Blue", year: 2010),
+            Car(color: "Blue", year: 2007)
+        ]
+        guard (try? models.saveAllDocuments()) != nil else {
+            XCTFail()
+            return
+        }
+
+        let a: [String]
+        let b: [String]
+        do {
+            a = try Car.distinct(on: "color")
+            let bb = try Car.distinct(on: "color", filtering: "year" < 2000, resultType: String.self)
+            b = bb
+        } catch {
+            XCTFail()
+            return
+        }
+        XCTAssertEqual(Set(a), Set(["White", "Red", "Blue"]))
+        XCTAssertEqual(Set(b), Set(["White", "Red"]))
+    }
+
     static var allTests = [
         ("testSave", testSave),
         ("testMongoProjection", testMongoProjection),
         ("testEnumSaveFind", testEnumSaveFind),
+        ("testDistinct", testDistinct)
         ]
 }
