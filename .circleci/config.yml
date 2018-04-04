@@ -2,7 +2,8 @@ version: 2.0
 jobs:
   build:
     docker:
-      - image: klembara/swift4:0.0.1
+      - image: norionomura/swift
+        #swiftdocker/swift
       - image: mongo:3.4.4
     steps:
       - checkout

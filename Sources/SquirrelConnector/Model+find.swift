@@ -155,6 +155,6 @@ public extension Model {
                                                 collation: collation) else {
                                                     return []
         }
-        return res.flatMap { $0 as? T }
+        return res.compactMap { $0 as? T }
     }
 }
