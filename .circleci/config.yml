@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: norionomura/swift
-        #swiftdocker/swift
+        #swiftdocker/swift update test docker
       - image: mongo:3.4.4
     steps:
       - checkout
@@ -15,7 +15,7 @@ jobs:
 
   test:
     docker:
-      - image: klembara/swift4:0.0.1
+      - image: norionomura/swift
       - image: mongo:3.4.4
     steps:
       - checkout
