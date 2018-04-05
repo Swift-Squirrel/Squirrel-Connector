@@ -167,6 +167,10 @@ extension Model {
                                                 collation: collation) else {
                                                     return []
         }
+        #if swift(>=4.1)
         return res.compactMap { $0 as? T }
+        #else
+        return res.flatMap { $0 as? T }
+        #endif
     }
 }

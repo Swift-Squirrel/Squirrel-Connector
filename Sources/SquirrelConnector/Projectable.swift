@@ -23,7 +23,11 @@ extension Projectable {
 
         let mirror = Mirror(reflecting: Self.init())
         let children = mirror.children
-        let attributes = children.compactMap({ $0.label })
+        #if swift(>=4.1)
+        let attributes = children.compactMap { $0.label }
+        #else
+        let attributes = children.flatMap { $0.label }
+        #endif
         let proj = Projection(attributes: attributes)
         cache.async.addObject(proj, forKey: name)
         return proj

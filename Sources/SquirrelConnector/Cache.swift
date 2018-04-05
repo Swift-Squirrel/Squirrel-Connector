@@ -84,7 +84,6 @@ extension Projection: Cachable {
     public func encode() -> Data? {
         let doc = self.makeDocument()
         return doc.keys.joined(separator: "<,>").data(using: .utf8)
-
     }
 
     /// typealias for Cache
