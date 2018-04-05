@@ -9,9 +9,10 @@ custom_rules:
     message: "Types, properties and methods with public or open access level should be documented."
     severity: warning
 
-variable_name:
+identifier_name:
   excluded:
     - id
+    - _id
       
 line_length:
   - 100 # warning

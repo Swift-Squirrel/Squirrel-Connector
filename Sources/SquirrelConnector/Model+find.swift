@@ -122,10 +122,11 @@ extension Model {
     }
 
     private static func findOneDocument<T>(_ filter: Query? = nil,
-                                   sortedBy sort: Sort? = nil,
-                                   projecting projection: Projection? = nil,
-                                   collation: Collation? = nil,
-                                   skipping skip: Int? = nil) throws -> T? where T: Codable {
+                                           sortedBy sort: Sort? = nil,
+                                           projecting projection: Projection? = nil,
+                                           collation: Collation? = nil,
+                                           skipping skip: Int? = nil) throws -> T?
+        where T: Codable {
 
         guard let document = try collection.findOne(
             filter,
@@ -143,12 +144,23 @@ extension Model {
     }
 }
 
-public extension Model {
+// MARK: - Distinct
+extension Model {
+    /// Distinct on given key
+    ///
+    /// - Parameters:
+    ///   - key: Key
+    ///   - query: Filter query
+    ///   - readConcern: Read concern
+    ///   - collation: Collation
+    ///   - resultType: Result type
+    /// - Returns: Array of results in given type
+    /// - Throws: MongoDB errors
     public static func distinct<T: Primitive>(on key: String,
-                                filtering query: Query? = nil,
-                                readConcern: ReadConcern? = nil,
-                                collation: Collation? = nil,
-                                resultType: T.Type = T.self) throws -> [T] {
+                                              filtering query: Query? = nil,
+                                              readConcern: ReadConcern? = nil,
+                                              collation: Collation? = nil,
+                                              resultType: T.Type = T.self) throws -> [T] {
         guard let res = try collection.distinct(on: key,
                                                 filtering: query,
                                                 readConcern: readConcern,
