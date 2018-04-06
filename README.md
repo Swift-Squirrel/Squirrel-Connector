@@ -1,9 +1,9 @@
 # Squirrel-Connector
 
-[![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser.svg)](https://circleci.com/gh/LeoNavel/Squirrel-Connector)
+[![CircleCI](https://img.shields.io/circleci/project/github/Swift-Squirrel/Squirrel-Connector.svg)](https://circleci.com/gh/Swift-Squirrel/Squirrel-Connector)
 [![platform](https://img.shields.io/badge/Platforms-OS_X%20%7C_Linux-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
 [![SPM](https://img.shields.io/badge/spm-Compatible-brightgreen.svg)](https://swift.org)
-[![swift](https://img.shields.io/badge/swift-4.0-orange.svg)](https://developer.apple.com/swift/)
+[![swift](https://img.shields.io/badge/swift-4.1-orange.svg)](https://developer.apple.com/swift/)
 
 Squirrel ORM connector for mongodb
 
@@ -51,6 +51,11 @@ extension Model {
     mutating func save() throws
     
     mutating func remove() throws
+    static func distinct<T: Primitive>(on key: String,
+                                       filtering query: Query? = nil,
+                                       readConcern: ReadConcern? = nil,
+                                       collation: Collation? = nil,
+                                       resultType: T.Type = T.self) throws -> [T]
 }
 
 extension Array where Element : Model {
@@ -77,7 +82,7 @@ struct Post: Model {
         self.body = body
     }
 
-    var id: ObjectId? = nil
+    var _id: ObjectId? = nil
     var title: String
     var body: String
     var comments: [Comment] = []
@@ -149,6 +154,10 @@ public struct SquirrelConnectorCache {
     public static func clearExpired()
 }
 ```
+
+## Documentation
+
+You can learn more in [documentation](https://squirrel.codes)
 
 ## See Also
 - [MongoKitten](https://github.com/OpenKitten/MongoKitten) Native MongoDB driver for Swift, written in Swift 
