@@ -147,6 +147,10 @@ class PublicConnectorTests: XCTestCase {
                 self.year = year
             }
         }
+        guard (try? Car.drop()) != nil else {
+            XCTFail()
+            return
+        }
         var models = [
             Car(color: "White", year: 1999),
             Car(color: "Red", year: 1993),
@@ -174,10 +178,58 @@ class PublicConnectorTests: XCTestCase {
         XCTAssertEqual(Set(b), Set(["White", "Red"]))
     }
 
+
+    func testArray() {
+        guard Connector.setConnector(host: "localhost", dbname: "exampledb") else {
+            XCTFail()
+            return
+        }
+        struct WeatherInfo: Model, Equatable {
+            var _id: ObjectId? = nil
+            var temperatures: [Int]
+            init(temperatures: [Int]) {
+                self.temperatures = temperatures
+            }
+            static func ==(l: WeatherInfo, r: WeatherInfo) -> Bool {
+                guard l._id == r._id else {
+                    return false
+                }
+                guard l.temperatures == r.temperatures else {
+                    return false
+                }
+                return true
+            }
+        }
+        guard (try? WeatherInfo.drop()) != nil else {
+            XCTFail()
+            return
+        }
+        var models = [
+            WeatherInfo(temperatures: [29, 30, 33]),
+            WeatherInfo(temperatures: [31, 35, 32]),
+            WeatherInfo(temperatures: [16, 17, 19, 22]),
+            WeatherInfo(temperatures: [27]),
+        ]
+        guard (try? models.saveAllDocuments()) != nil else {
+            XCTFail()
+            return
+        }
+
+        let a: [WeatherInfo]
+        do {
+            a = try WeatherInfo.find()
+        } catch {
+            XCTFail()
+            return
+        }
+        XCTAssertEqual(models, a)
+    }
+
     static var allTests = [
         ("testSave", testSave),
         ("testMongoProjection", testMongoProjection),
         ("testEnumSaveFind", testEnumSaveFind),
-        ("testDistinct", testDistinct)
-        ]
+        ("testDistinct", testDistinct),
+        ("testArray", testArray)
+    ]
 }

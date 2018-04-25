@@ -74,7 +74,7 @@ extension Model {
                                             skipping: skip,
                                             limitedTo: limit)
 
-        let data: [Any] = documents.map({ return convertToJSON(document: $0) })
+        let data: [Any] = documents.map { return convertToJSON(document: $0) }
         let jsonDecoder = JSONDecoder()
         let jsonData = try JSONSerialization.data(withJSONObject: data)
         return try jsonDecoder.decode([T].self, from: jsonData)
