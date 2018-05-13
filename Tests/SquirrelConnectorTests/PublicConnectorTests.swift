@@ -186,8 +186,8 @@ class PublicConnectorTests: XCTestCase {
         }
         struct WeatherInfo: Model, Equatable {
             var _id: ObjectId? = nil
-            var temperatures: [Int]
-            init(temperatures: [Int]) {
+            var temperatures: [Int]?
+            init(temperatures: [Int]?) {
                 self.temperatures = temperatures
             }
             static func ==(l: WeatherInfo, r: WeatherInfo) -> Bool {
@@ -208,6 +208,7 @@ class PublicConnectorTests: XCTestCase {
             WeatherInfo(temperatures: [29, 30, 33]),
             WeatherInfo(temperatures: [31, 35, 32]),
             WeatherInfo(temperatures: [16, 17, 19, 22]),
+            WeatherInfo(temperatures: nil),
             WeatherInfo(temperatures: [27]),
         ]
         guard (try? models.saveAllDocuments()) != nil else {
